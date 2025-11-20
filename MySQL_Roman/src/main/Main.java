@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 import bd_crud.CrearTablas;
 import bd_crud.InsertarRegistros;
+import bd_crud.Listar;
 import utils.Utils;
 
 public class Main {
@@ -50,7 +51,7 @@ public class Main {
 						InsertarRegistros.insertarRegistros(con, reader);
 					}
 					case 3 -> {
-						// Listar registros
+						Listar.listarTablas(con, reader);
 					}
 					case 4 -> {
 						// Modificar registros

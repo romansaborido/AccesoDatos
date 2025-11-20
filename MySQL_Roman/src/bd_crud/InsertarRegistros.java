@@ -8,17 +8,23 @@ import java.util.Scanner;
 public class InsertarRegistros {
 
     public static void insertarRegistros(Connection con, Scanner reader) throws SQLException {
-
+    	
+    	// Variables para almacenar la opcion que seleccione el usuario y controlar la salida
         int opcion;
         boolean exit = false;
 
         do {
+        	
+        	// Imprimimos el menu
             menuInsertarRegistros();
 
+            
+            // Pedimos al usuario que inserte una opcion
             System.out.print("\nSeleccione una opcion -> ");
             opcion = reader.nextInt();
-            reader.nextLine(); // limpiar buffer
-
+            reader.nextLine();
+            
+            // Switcheamos la opcion del menu
             switch (opcion) {
                 case 1 -> insertarMesa(con, reader);
                 case 2 -> insertarFactura(con, reader);
@@ -27,10 +33,10 @@ public class InsertarRegistros {
                 case 5 -> exit = true;
                 default -> System.out.println("Opción no válida");
             }
-
         } while (!exit);
     }
 
+    // Pinta el menu
     private static void menuInsertarRegistros() {
         System.out.println("\n¿En qué tablas quieres insertar?");
         System.out.println("--------------------------");
@@ -41,8 +47,8 @@ public class InsertarRegistros {
         System.out.println("5. Salir");
     }
 
-    // ------------------- METODOS DE INSERCION -------------------
 
+    // Pide e inserta los datos de una mesa
     private static void insertarMesa(Connection conn, Scanner reader) {
         System.out.print("Introduzca el número de comensales: ");
         int numComensales = reader.nextInt();
@@ -56,6 +62,7 @@ public class InsertarRegistros {
         ejecutarSQL(conn, sql, "Mesa");
     }
 
+    // Pide e inserta los datos de una factura
     private static void insertarFactura(Connection conn, Scanner reader) {
         int idMesa = seleccionarMesa(conn, reader);
 
@@ -72,6 +79,7 @@ public class InsertarRegistros {
         ejecutarSQL(conn, sql, "Factura");
     }
 
+    // Pide e inserta los datos de un pedido
     private static void insertarPedido(Connection conn, Scanner reader) {
         int idFactura = seleccionarFactura(conn, reader);
         int idProducto = seleccionarProducto(conn, reader);
@@ -86,6 +94,7 @@ public class InsertarRegistros {
         ejecutarSQL(conn, sql, "Pedido");
     }
 
+    // Pide e inserta los datos de un producto
     private static void insertarProducto(Connection conn, Scanner reader) {
         System.out.print("Introduzca la denominación del producto: ");
         String denominacion = reader.nextLine();
@@ -99,8 +108,8 @@ public class InsertarRegistros {
         ejecutarSQL(conn, sql, "Producto");
     }
 
-    // ------------------- METODOS GENERICOS -------------------
 
+    // Ejecuta las sentencias sql, es llamada en cada una de las funciones anteriores
     private static void ejecutarSQL(Connection conn, String sql, String nombreTabla) {
         try (Statement st = conn.createStatement()) {
             int filas = st.executeUpdate(sql);
@@ -110,8 +119,7 @@ public class InsertarRegistros {
         }
     }
 
-    // ------------------- SELECCION DE FKS -------------------
-
+    // Muestra los id de las mesas y pide al usuario que seleccione uno
     private static int seleccionarMesa(Connection conn, Scanner reader) {
         List<Integer> mesas = new ArrayList<>();
         try (Statement st = conn.createStatement()) {
@@ -138,6 +146,7 @@ public class InsertarRegistros {
         return idMesa;
     }
 
+    // Muestra los id de las facturas y pide al usuario que introduzca uno
     private static int seleccionarFactura(Connection conn, Scanner reader) {
         List<Integer> facturas = new ArrayList<>();
         try (Statement st = conn.createStatement()) {
@@ -164,6 +173,7 @@ public class InsertarRegistros {
         return idFactura;
     }
 
+    // Muestra los id de los productos y pide al usuario que introduzca uno
     private static int seleccionarProducto(Connection conn, Scanner reader) {
         List<Integer> productos = new ArrayList<>();
         try (Statement st = conn.createStatement()) {
