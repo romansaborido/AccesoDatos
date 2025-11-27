@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import entities.Factura;
+import entities.Mesa;
+import utils.Utils;
+
 public class InsertarRegistros {
 
     public static void insertarRegistros(Connection con, Scanner reader) throws SQLException {
@@ -12,13 +16,13 @@ public class InsertarRegistros {
     	// Variables para almacenar la opcion que seleccione el usuario y controlar la salida
         int opcion;
         boolean exit = false;
+        
 
         do {
         	
         	// Imprimimos el menu
             menuInsertarRegistros();
 
-            
             // Pedimos al usuario que inserte una opcion
             System.out.print("\nSeleccione una opcion -> ");
             opcion = reader.nextInt();
@@ -50,31 +54,22 @@ public class InsertarRegistros {
 
     // Pide e inserta los datos de una mesa
     private static void insertarMesa(Connection conn, Scanner reader) {
-        System.out.print("Introduzca el número de comensales: ");
-        int numComensales = reader.nextInt();
 
-        System.out.print("Introduzca el número de reserva: ");
-        int reserva = reader.nextInt();
-        reader.nextLine();
+    	Mesa mesa = Utils.crearMesa(reader);
 
-        String sql = "INSERT INTO mesa (numComensales, reserva) VALUES (" + numComensales + ", " + reserva + ")";
+        String sql = "INSERT INTO mesa (numComensales, reserva) VALUES (" + mesa.numComensales() + ", " + mesa.reserva() + ")";
 
         ejecutarSQL(conn, sql, "Mesa");
     }
 
     // Pide e inserta los datos de una factura
     private static void insertarFactura(Connection conn, Scanner reader) {
-        int idMesa = seleccionarMesa(conn, reader);
+        mostrarMesas(conn);
 
-        System.out.print("Introduzca el tipo de pago: ");
-        String tipoPago = reader.nextLine();
-
-        System.out.print("Introduzca el importe: ");
-        double importe = reader.nextDouble();
-        reader.nextLine();
-
+        Factura factura = Utils.crearFactura(reader);
+        
         String sql = "INSERT INTO factura (idMesa, tipoPago, importe) VALUES ("
-                + idMesa + ", '" + tipoPago + "', " + importe + ")";
+                + factura.idMesa() + ", '" + factura.tipoPago() + "', " + factura.importe() + ")";
 
         ejecutarSQL(conn, sql, "Factura");
     }
@@ -120,7 +115,7 @@ public class InsertarRegistros {
     }
 
     // Muestra los id de las mesas y pide al usuario que seleccione uno
-    private static int seleccionarMesa(Connection conn, Scanner reader) {
+    private static void mostrarMesas(Connection conn) {
         List<Integer> mesas = new ArrayList<>();
         try (Statement st = conn.createStatement()) {
             ResultSet rs = st.executeQuery("SELECT idMesa, numComensales, reserva FROM mesa");
@@ -132,18 +127,6 @@ public class InsertarRegistros {
         } catch (SQLException e) {
             System.out.println("Error al listar mesas: " + e.getMessage());
         }
-
-        int idMesa;
-        do {
-            System.out.print("Seleccione el ID de la mesa: ");
-            idMesa = reader.nextInt();
-            reader.nextLine();
-            if (!mesas.contains(idMesa)) {
-                System.out.println("ID no válido, intente de nuevo.");
-            }
-        } while (!mesas.contains(idMesa));
-
-        return idMesa;
     }
 
     // Muestra los id de las facturas y pide al usuario que introduzca uno
