@@ -166,6 +166,8 @@ public class Modificar {
     }
 
     private static int pedirId(Scanner reader) {
+    	
+    	// Almacena el id que introduce el usuario
         int id = 0;
         boolean idValido = false;
         do {

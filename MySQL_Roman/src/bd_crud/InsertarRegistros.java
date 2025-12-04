@@ -2,11 +2,12 @@ package bd_crud;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import entities.Factura;
 import entities.Mesa;
+import entities.Pedido;
+import entities.Producto;
 import utils.Utils;
 
 public class InsertarRegistros {
@@ -40,7 +41,7 @@ public class InsertarRegistros {
         } while (!exit);
     }
 
-    // Pinta el menu
+    
     private static void menuInsertarRegistros() {
         System.out.println("\n¿En qué tablas quieres insertar?");
         System.out.println("--------------------------");
@@ -48,138 +49,165 @@ public class InsertarRegistros {
         System.out.println("2. Factura");
         System.out.println("3. Pedido");
         System.out.println("4. Productos");
-        System.out.println("5. Salir");
+        System.out.println("5. Volver");
     }
 
 
-    // Pide e inserta los datos de una mesa
     private static void insertarMesa(Connection conn, Scanner reader) {
 
+    	// Creamos la mesa
     	Mesa mesa = Utils.crearMesa(reader);
 
+    	// Creamos la consulta para insertar la mesa
         String sql = "INSERT INTO mesa (numComensales, reserva) VALUES (" + mesa.numComensales() + ", " + mesa.reserva() + ")";
 
+        // Ejecutamos la consulta
         ejecutarSQL(conn, sql, "Mesa");
     }
 
-    // Pide e inserta los datos de una factura
+    
     private static void insertarFactura(Connection conn, Scanner reader) {
-        mostrarMesas(conn);
+    	
+    	// Mostramos las mesas existentes y obtenemos sus IDs
+        ArrayList<Integer> mesas = mostrarMesas(conn);
 
-        Factura factura = Utils.crearFactura(reader);
+        // Creamos la factura
+        Factura factura = Utils.crearFactura(reader, mesas);
         
+        // Creamos la consulta sql para insertar la factura
         String sql = "INSERT INTO factura (idMesa, tipoPago, importe) VALUES ("
                 + factura.idMesa() + ", '" + factura.tipoPago() + "', " + factura.importe() + ")";
-
+        
+        // Ejecutamos la consulta
         ejecutarSQL(conn, sql, "Factura");
     }
 
-    // Pide e inserta los datos de un pedido
+    
     private static void insertarPedido(Connection conn, Scanner reader) {
-        int idFactura = seleccionarFactura(conn, reader);
-        int idProducto = seleccionarProducto(conn, reader);
+    	
+    	// Mostramos las facturas existentes
+    	ArrayList<Integer> facturas = mostrarFacturas(conn);
+        
+        // Mostramos los productos existentes
+    	ArrayList<Integer> productos = mostrarProductos(conn);
 
-        System.out.print("Introduzca la cantidad: ");
-        int cantidad = reader.nextInt();
-        reader.nextLine();
+        // Creamos el pedido
+        Pedido pedido = Utils.crearPedido(reader, facturas, productos);
 
+        // Creamos la consulta sql para insertar la factura
         String sql = "INSERT INTO pedido (idFactura, idProducto, cantidad) VALUES ("
-                + idFactura + ", " + idProducto + ", " + cantidad + ")";
+                + pedido.idFactura() + ", " + pedido.idProducto() + ", " + pedido.cantidad() + ")";
 
+        // Ejecutamos la consulta
         ejecutarSQL(conn, sql, "Pedido");
     }
 
-    // Pide e inserta los datos de un producto
+    
     private static void insertarProducto(Connection conn, Scanner reader) {
-        System.out.print("Introduzca la denominación del producto: ");
-        String denominacion = reader.nextLine();
 
-        System.out.print("Introduzca el precio: ");
-        double precio = reader.nextDouble();
-        reader.nextLine();
+    	// Creamos el producto
+    	Producto producto = Utils.crearProducto(reader);
 
-        String sql = "INSERT INTO productos (denominacion, precio) VALUES ('" + denominacion + "', " + precio + ")";
+    	// Creamos la consulta sql para insertar el producto
+        String sql = "INSERT INTO productos (denominacion, precio) VALUES ('" + producto.denominacion() + "', " + producto.precio() + ")";
 
+        // Ejecutamos la consulta
         ejecutarSQL(conn, sql, "Producto");
     }
 
-
-    // Ejecuta las sentencias sql, es llamada en cada una de las funciones anteriores
+    
     private static void ejecutarSQL(Connection conn, String sql, String nombreTabla) {
+    	
+    	// Creamos el statement
         try (Statement st = conn.createStatement()) {
+        	
+        	// Ejecutamos la consulta y obtenemos las filas afectadas
             int filas = st.executeUpdate(sql);
-            System.out.println(nombreTabla + " insertado correctamente. Filas afectadas: " + filas);
+            
+            // Imprimimos el resultado
+            System.out.println("\n" + nombreTabla + " se inserto correctamente. Filas afectadas: " + filas);
+        
+        // Capturamos excepciones y mostramos un mensaje de error
         } catch (SQLException e) {
-            System.out.println("Error al insertar " + nombreTabla + ": " + e.getMessage());
+            System.out.println("Error al insertar " + nombreTabla);
         }
     }
 
-    // Muestra los id de las mesas y pide al usuario que seleccione uno
-    private static void mostrarMesas(Connection conn) {
-        List<Integer> mesas = new ArrayList<>();
+    
+    private static ArrayList<Integer> mostrarMesas(Connection conn) {
+    	
+    	// Creamos una lista de enteros
+        ArrayList<Integer> mesas = new ArrayList<>();
+        
+        // Creamos el statement
         try (Statement st = conn.createStatement()) {
+        	
+        	// Ejecutamos la consulta y obtenemos su resultado con el ResultSet
             ResultSet rs = st.executeQuery("SELECT idMesa, numComensales, reserva FROM mesa");
+            
+            // Recorremos la respuesta
             while (rs.next()) {
                 int id = rs.getInt("idMesa");
                 System.out.println(id + ": Comensales=" + rs.getInt("numComensales") + ", Reserva=" + rs.getInt("reserva"));
                 mesas.add(id);
             }
         } catch (SQLException e) {
-            System.out.println("Error al listar mesas: " + e.getMessage());
+            System.out.println("Error al listar mesas");
         }
+        
+        // Devolvemos el arrayList con los IDs
+        return mesas;
     }
 
-    // Muestra los id de las facturas y pide al usuario que introduzca uno
-    private static int seleccionarFactura(Connection conn, Scanner reader) {
-        List<Integer> facturas = new ArrayList<>();
+   
+    private static ArrayList<Integer> mostrarFacturas(Connection conn) {
+    	
+    	// Creamos una lista de enteros
+    	ArrayList<Integer> facturas = new ArrayList<>();
+    	
+    	// Creamos el statement
         try (Statement st = conn.createStatement()) {
+        	
+        	// Ejecutamos la consulta y obtenemos su resultado con el ResultSet
             ResultSet rs = st.executeQuery("SELECT idFactura, idMesa, importe FROM factura");
+            
+            // Recorremos la respuesta
             while (rs.next()) {
                 int id = rs.getInt("idFactura");
                 System.out.println(id + ": Mesa=" + rs.getInt("idMesa") + ", Importe=" + rs.getDouble("importe"));
                 facturas.add(id);
             }
         } catch (SQLException e) {
-            System.out.println("Error al listar facturas: " + e.getMessage());
+            System.out.println("Error al listar facturas");
         }
-
-        int idFactura;
-        do {
-            System.out.print("Seleccione el ID de la factura: ");
-            idFactura = reader.nextInt();
-            reader.nextLine();
-            if (!facturas.contains(idFactura)) {
-                System.out.println("ID no válido, intente de nuevo.");
-            }
-        } while (!facturas.contains(idFactura));
-
-        return idFactura;
+        
+        // Devolvemos el arrayList con los IDs
+        return facturas;
     }
 
-    // Muestra los id de los productos y pide al usuario que introduzca uno
-    private static int seleccionarProducto(Connection conn, Scanner reader) {
-        List<Integer> productos = new ArrayList<>();
+    
+    private static ArrayList<Integer> mostrarProductos(Connection conn) {
+    	
+    	// Creamos una lista de enteros
+    	ArrayList<Integer> productos = new ArrayList<>();
+    	
+    	// Creamos el statement
         try (Statement st = conn.createStatement()) {
+        	
+        	// Ejecutamos la consulta y obtenemos su resultado con el ResultSet
             ResultSet rs = st.executeQuery("SELECT idProducto, denominacion, precio FROM productos");
+            
+            // Recorremos la respuesta
             while (rs.next()) {
                 int id = rs.getInt("idProducto");
                 System.out.println(id + ": " + rs.getString("denominacion") + ", Precio=" + rs.getDouble("precio"));
                 productos.add(id);
             }
         } catch (SQLException e) {
-            System.out.println("Error al listar productos: " + e.getMessage());
+            System.out.println("Error al listar productos:");
         }
-
-        int idProducto;
-        do {
-            System.out.print("Seleccione el ID del producto: ");
-            idProducto = reader.nextInt();
-            reader.nextLine();
-            if (!productos.contains(idProducto)) {
-                System.out.println("ID no válido, intente de nuevo.");
-            }
-        } while (!productos.contains(idProducto));
-
-        return idProducto;
+        
+        // Devolvemos el arrayList con los IDs
+        return productos;
     }
 }

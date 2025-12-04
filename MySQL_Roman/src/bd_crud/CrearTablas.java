@@ -32,7 +32,7 @@ public class CrearTablas {
 				// Pedimos al usuario que introduzca una opcion
 				System.out.print("\nSeleccione una opcion -> ");
 				opcion = reader.nextInt();
-				reader.nextLine(); // limpiar buffer
+				reader.nextLine();
 				
 				// Dependiendo de la opcion que seleccione el usuario...
 				switch (opcion) {
@@ -172,7 +172,7 @@ public class CrearTablas {
 					        
 					        System.out.println("✅ Todas las tablas se han creado correctamente");
 					    } catch (SQLException e) {
-					        System.out.println("❌ Ha ocurrido un error al crear las tablas: " + e.getMessage());
+					        System.out.println("❌ Ha ocurrido un error al crear las tablas");
 					        e.printStackTrace();
 					    }
 					}
@@ -197,6 +197,6 @@ public class CrearTablas {
 		System.out.println("3. Pedido");
 		System.out.println("4. Productos");
 		System.out.println("5. Todas");
-		System.out.println("6. Salir");
+		System.out.println("6. Volver");
 	}
 }

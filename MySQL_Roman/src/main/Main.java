@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.sql.DatabaseMetaData;
 import java.util.Scanner;
 
+import bd_crud.BorrarRegistros;
+import bd_crud.BorrarTablas;
 import bd_crud.CrearTablas;
 import bd_crud.InsertarRegistros;
 import bd_crud.Listar;
@@ -58,10 +60,14 @@ public class Main {
 						Modificar.modificarRegistro(con, reader);
 					}
 					case 5 -> {
-						// Borrar registros
+						BorrarRegistros.eliminarRegistros(reader, con);
 					}
 					case 6 -> {
-						// Eliminar tablas
+						BorrarTablas.borrarTablas(con, reader);
+					}
+					case 7 -> {
+						System.out.println("\nFin del programa");
+						exit = true;
 					}
 					default -> {
 						System.out.println("Opción no válida");
@@ -91,6 +97,7 @@ public class Main {
 		System.out.println("4. Modificar");
 		System.out.println("5. Borrar");
 		System.out.println("6. Eliminar Tablas");
+		System.out.println("7. Salir");
 	}
 	
 

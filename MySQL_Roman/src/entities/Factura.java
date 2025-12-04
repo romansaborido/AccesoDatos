@@ -4,9 +4,9 @@ public class Factura {
 
 	private int idMesa;
 	private String tipoPago;
-	private int importe;
+	private double importe;
 	
-	public Factura(int idMesa, String tipoPago, int importe) {
+	public Factura(int idMesa, String tipoPago, double importe) {
 		if (idMesa > 0) { this.idMesa = idMesa; }
 		if (importe > 0) { this.importe = importe; }
 		if (tipoPago != null && !tipoPago.isBlank()) { this.tipoPago = tipoPago; }
@@ -16,7 +16,7 @@ public class Factura {
 		return this.idMesa;
 	}
 	
-	public int importe() {
+	public double importe() {
 		return this.importe;
 	}
 	
