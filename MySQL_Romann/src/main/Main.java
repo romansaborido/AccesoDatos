@@ -95,10 +95,11 @@ public class Main {
 		System.out.println("2. Insertar");
 		System.out.println("3. Listar");
 		System.out.println("4. Modificar");
-		System.out.println("5. Borrar");
+		System.out.println("5. Borrar Registros");
 		System.out.println("6. Eliminar Tablas");
 		System.out.println("7. Salir");
 	}
 	
 
 }
+

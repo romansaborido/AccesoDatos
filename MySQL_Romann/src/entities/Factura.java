@@ -24,3 +24,4 @@ public class Factura {
 		return this.tipoPago;
 	}
 }
+

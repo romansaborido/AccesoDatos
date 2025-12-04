@@ -49,13 +49,22 @@ public class Modificar {
                     	
                     	// Pedimos al usuario que introduzca la nueva mesa y updateamos
                         try {
+                        	
+                        	// Desactivamos el autoCommit
                             con.setAutoCommit(false);
+                            
+                            // Modificamos la mesa
                             modificarMesa(con, reader, id);
+                            
+                            // Confirmamos los cambios
                             confirmarCambios(con, reader);
+                            
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            System.err.println("Error al modificar la mesa");
                         } finally {
-                            try { con.setAutoCommit(true); } catch (SQLException ignored) {}
+                            try { con.setAutoCommit(true); } catch (SQLException ex) {
+                            	System.err.println("Error al modificar la mesa");
+                            	}
                         }
                     
                     // Si el registro no existe    
@@ -83,7 +92,9 @@ public class Modificar {
                         } catch (SQLException e) {
                             e.printStackTrace();
                         } finally {
-                            try { con.setAutoCommit(true); } catch (SQLException ignored) {}
+                            try { con.setAutoCommit(true); } catch (SQLException ex) {
+                            	System.err.println("Error al modificar la factura");
+                            	}
                         }
                     
                     // Si el registro no existe    
@@ -111,7 +122,9 @@ public class Modificar {
                         } catch (SQLException e) {
                             e.printStackTrace();
                         } finally {
-                            try { con.setAutoCommit(true); } catch (SQLException ignored) {}
+                            try { con.setAutoCommit(true); } catch (SQLException ex) {
+                            	System.err.println("Error al modificar el pedido");
+                            	}
                         }
                     
                     // Si el pedido no existe    
@@ -137,7 +150,9 @@ public class Modificar {
                         } catch (SQLException e) {
                             e.printStackTrace();
                         } finally {
-                            try { con.setAutoCommit(true); } catch (SQLException ignored) {}
+                            try { con.setAutoCommit(true); } catch (SQLException ex) {
+                            	System.err.println("Error al modificar el producto");
+                            	}
                         }
                     
                     // Si el registro no existe    
@@ -167,9 +182,9 @@ public class Modificar {
 
     private static int pedirId(Scanner reader) {
     	
-    	// Almacena el id que introduce el usuario
         int id = 0;
         boolean idValido = false;
+        
         do {
             System.out.print("\nIntroduzca el ID del registro a modificar -> ");
             try {
@@ -180,26 +195,33 @@ public class Modificar {
                 reader.nextLine();
             }
         } while (!idValido);
+        
         return id;
     }
 
     private static boolean existeRegistro(Connection conn, String tabla, String campoId, int id) {
-        boolean res = false;
+        
+    	boolean res = false;
+    	
         String sql = "SELECT COUNT(*) FROM " + tabla + " WHERE " + campoId + " = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
+        
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        	
+            ps.setInt(1, id);
+            
+            try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     res = rs.getInt(1) > 0;
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("No existe un campo en la tabla " + tabla + " con el ID " + id);
         }
         return res;
     }
 
     private static void confirmarCambios(Connection conn, Scanner reader) {
+    	
         reader.nextLine();
         System.out.print("\n¿Desea confirmar los cambios? (S/N) -> ");
         String respuesta = reader.nextLine().trim().toUpperCase();
@@ -212,83 +234,118 @@ public class Modificar {
                 System.out.println("Cambios cancelados.");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error al confirmar los cambios");
         }
     }
 
     private static void modificarMesa(Connection conn, Scanner reader, int id) {
-        System.out.print("\nNúmero de comensales -> ");
-        int numComensales = reader.nextInt();
-        System.out.print("¿Está reservada? (1=Sí, 0=No) -> ");
-        int reserva = reader.nextInt();
+        
+    	int numComensales;
+    	int reserva;
+    	
+    	System.out.print("\nNúmero de comensales -> ");
+        numComensales = reader.nextInt();
+        
+        System.out.print("Número de reserva -> ");
+        reserva = reader.nextInt();
 
         String sql = "UPDATE mesa SET numComensales=?, reserva=? WHERE idMesa=?";
+        
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        	
             stmt.setInt(1, numComensales);
             stmt.setInt(2, reserva);
             stmt.setInt(3, id);
             stmt.executeUpdate();
+            
         } catch (SQLException e) {
-            e.printStackTrace();
+        	System.err.println("Error al updatear la mesa con ID " + id);
         }
     }
 
     private static void modificarProducto(Connection conn, Scanner reader, int id) {
-        reader.nextLine();
+        
+    	String denominacion;
+    	double precio;
+    	
+    	reader.nextLine();
         System.out.print("Denominación -> ");
-        String denominacion = reader.nextLine();
+        denominacion = reader.nextLine();
+        
         System.out.print("Precio -> ");
-        double precio = reader.nextDouble();
+        precio = reader.nextDouble();
 
         String sql = "UPDATE productos SET denominacion=?, precio=? WHERE idProducto=?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, denominacion);
-            stmt.setDouble(2, precio);
-            stmt.setInt(3, id);
-            stmt.executeUpdate();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        	
+            ps.setString(1, denominacion);
+            ps.setDouble(2, precio);
+            ps.setInt(3, id);
+            ps.executeUpdate();
+            
         } catch (SQLException e) {
-            e.printStackTrace();
+        	System.err.println("Error al updatear el producto con ID " + id);
         }
     }
 
     private static void modificarFactura(Connection conn, Scanner reader, int id) {
-        System.out.print("idMesa -> ");
-        int idMesa = reader.nextInt();
+        
+    	int idMesa;
+    	String tipoPago;
+    	double importe;
+    	
+    	System.out.print("idMesa -> ");
+        idMesa = reader.nextInt();
         reader.nextLine();
+        
         System.out.print("Tipo de pago -> ");
-        String tipoPago = reader.nextLine();
+        tipoPago = reader.nextLine();
+        
         System.out.print("Importe -> ");
-        double importe = reader.nextDouble();
+        importe = reader.nextDouble();
 
         String sql = "UPDATE factura SET idMesa=?, tipoPago=?, importe=? WHERE idFactura=?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idMesa);
-            stmt.setString(2, tipoPago);
-            stmt.setDouble(3, importe);
-            stmt.setInt(4, id);
-            stmt.executeUpdate();
+        
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        	
+            ps.setInt(1, idMesa);
+            ps.setString(2, tipoPago);
+            ps.setDouble(3, importe);
+            ps.setInt(4, id);
+            ps.executeUpdate();
+            
         } catch (SQLException e) {
-            e.printStackTrace();
+        	System.err.println("Error al updatear la factura con ID " + id);
         }
     }
 
     private static void modificarPedido(Connection conn, Scanner reader, int id) {
+    	
+    	int idFactura;
+    	int idProducto;
+    	int cantidad;
+    	
         System.out.print("idFactura -> ");
-        int idFactura = reader.nextInt();
+        idFactura = reader.nextInt();
+        
         System.out.print("idProducto -> ");
-        int idProducto = reader.nextInt();
+        idProducto = reader.nextInt();
+        
         System.out.print("Cantidad -> ");
-        int cantidad = reader.nextInt();
+        cantidad = reader.nextInt();
 
         String sql = "UPDATE pedido SET idFactura=?, idProducto=?, cantidad=? WHERE idPedido=?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idFactura);
-            stmt.setInt(2, idProducto);
-            stmt.setInt(3, cantidad);
-            stmt.setInt(4, id);
-            stmt.executeUpdate();
+        
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        	
+            ps.setInt(1, idFactura);
+            ps.setInt(2, idProducto);
+            ps.setInt(3, cantidad);
+            ps.setInt(4, id);
+            ps.executeUpdate();
+           
         } catch (SQLException e) {
-            e.printStackTrace();
+        	System.err.println("Error al updatear el pedido con ID " + id);
         }
     }
 }

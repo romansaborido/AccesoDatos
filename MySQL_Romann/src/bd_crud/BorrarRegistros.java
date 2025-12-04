@@ -23,10 +23,24 @@ public class BorrarRegistros {
                     eliminarPorId("mesa", "idMesa", conn, reader);
                 }    
                 case 2 -> {
-                    eliminarPorId("factura", "idFactura", conn, reader);
+                	try {
+						Statement st = conn.createStatement();
+						st.execute("SET FOREIGN_KEY_CHECKS = 0");
+						eliminarPorId("factura", "idFactura", conn, reader);
+						st.execute("SET FOREIGN_KEY_CHECKS = 1");
+					} catch (SQLException e) {
+						System.out.println("Error al eliminar la factura");
+					}
                 }    
                 case 3 -> {
-                    eliminarPorId("pedido", "idPedido", conn, reader);
+                	try {
+						Statement st = conn.createStatement();
+						st.execute("SET FOREIGN_KEY_CHECKS = 0");
+						eliminarPorId("pedido", "idPedido", conn, reader);
+						st.execute("SET FOREIGN_KEY_CHECKS = 1");
+					} catch (SQLException e) {
+						System.out.println("Error al eliminar el pedido");
+					}
                 }    
                 case 4 -> {
                 	eliminarPorId("productos", "idProducto", conn, reader);
@@ -45,17 +59,23 @@ public class BorrarRegistros {
     private static void eliminarPorId(String tabla, String campo, Connection conn, Scanner reader) {
  
     	int id;
+    	boolean idValido = false;
     	
-        System.out.print("Introduce el ID que deseas eliminar de la tabla " + tabla + ": ");
-        id = reader.nextInt();
+    	do {
+    		System.out.print("\nIntroduzca el ID que deseas eliminar de la tabla " + tabla + " -> ");
+            id = reader.nextInt();
+            
+            // Validamos el ID
+            if (!existeId(tabla, campo, id, conn)) {
+                System.out.println("❌ El ID " + id + " no existe en la tabla " + tabla);
+            } else {
+            	idValido = true;
+            }
+    	} while (!idValido);
+        
 
         try {
-            // Verificar si existe
-            if (!existeId(tabla, id, conn)) {
-                System.out.println("❌ El ID " + id + " no existe en la tabla " + tabla);
-            }
-
-            // Si existe, eliminar
+            // Eliminamos
             String sqlDelete = "DELETE FROM " + tabla + " WHERE " + campo + " = ?";
             PreparedStatement pst = conn.prepareStatement(sqlDelete);
             pst.setInt(1, id);
@@ -74,20 +94,26 @@ public class BorrarRegistros {
     }
 
 
-    private static boolean existeId(String tabla, int id, Connection conn) throws SQLException {
+    private static boolean existeId(String tabla, String campo, int id, Connection conn) {
     	
     	boolean res = false;
     	
-        String sqlCheck = "SELECT COUNT(*) FROM " + tabla + " WHERE id = ?";
+        String sqlCheck = "SELECT COUNT(*) FROM " + tabla + " WHERE " + campo + " = ?";
+        PreparedStatement pst;
         
-        PreparedStatement pst = conn.prepareStatement(sqlCheck);
-        pst.setInt(1, id);
+		try {
+			pst = conn.prepareStatement(sqlCheck);
 
-        ResultSet rs = pst.executeQuery();
-        
-        if (rs.next()) {
-            res = rs.getInt(1) > 0;
-        }
+			pst.setInt(1, id);
+			
+	        ResultSet rs = pst.executeQuery();
+	        
+	        if (rs.next()) {
+	            res = rs.getInt(1) > 0;
+	        }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
         
         return res;
     }
