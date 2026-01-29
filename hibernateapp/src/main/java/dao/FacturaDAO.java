@@ -20,10 +20,10 @@ public class FacturaDAO {
             transaction = session.beginTransaction();
             session.save(factura);
             transaction.commit();
-            System.out.println("✓ Factura insertada correctamente con ID: " + factura.getIdFactura());
+            System.out.println("Factura insertada correctamente con ID: " + factura.getIdFactura());
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            System.err.println("✗ Error al insertar factura: " + e.getMessage());
+            System.err.println("Error al insertar factura: " + e.getMessage());
         }
     }
     
@@ -36,7 +36,7 @@ public class FacturaDAO {
             List<Mesa> mesas = session.createQuery("FROM Mesa", Mesa.class).list();
             
             if (mesas.isEmpty()) {
-                System.err.println("✗ No hay mesas disponibles. Debe crear mesas primero.");
+                System.err.println("No hay mesas disponibles. Debe crear mesas primero.");
                 return;
             }
             
@@ -51,7 +51,7 @@ public class FacturaDAO {
             
             Mesa mesa = session.get(Mesa.class, idMesa);
             if (mesa == null) {
-                System.err.println("✗ No existe una mesa con ID " + idMesa);
+                System.err.println("No existe una mesa con ID " + idMesa);
                 return;
             }
             
@@ -66,11 +66,11 @@ public class FacturaDAO {
             session.save(factura);
             transaction.commit();
             
-            System.out.println("✓ Factura insertada correctamente con ID: " + factura.getIdFactura());
+            System.out.println("Factura insertada correctamente con ID: " + factura.getIdFactura());
             
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            System.err.println("✗ Error al insertar factura: " + e.getMessage());
+            System.err.println("Error al insertar factura: " + e.getMessage());
         }
     }
     
@@ -79,7 +79,7 @@ public class FacturaDAO {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
             return session.createQuery("FROM Factura", Factura.class).list();
         } catch (Exception e) {
-            System.err.println("✗ Error al listar facturas: " + e.getMessage());
+            System.err.println("Error al listar facturas: " + e.getMessage());
             return null;
         }
     }
@@ -89,7 +89,7 @@ public class FacturaDAO {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
             return session.get(Factura.class, id);
         } catch (Exception e) {
-            System.err.println("✗ Error al buscar factura: " + e.getMessage());
+            System.err.println("Error al buscar factura: " + e.getMessage());
             return null;
         }
     }
@@ -101,7 +101,7 @@ public class FacturaDAO {
             query.setParameter("tipo", "%" + tipoPago + "%");
             return query.list();
         } catch (Exception e) {
-            System.err.println("✗ Error al buscar: " + e.getMessage());
+            System.err.println("Error al buscar: " + e.getMessage());
             return null;
         }
     }
@@ -115,7 +115,7 @@ public class FacturaDAO {
             
             Factura factura = session.get(Factura.class, id);
             if (factura == null) {
-                System.err.println("✗ No existe una factura con ID " + id);
+                System.err.println("No existe una factura con ID " + id);
                 return;
             }
             
@@ -137,15 +137,15 @@ public class FacturaDAO {
             
             if (confirmar.equalsIgnoreCase("S")) {
                 transaction.commit();
-                System.out.println("✓ Cambios confirmados");
+                System.out.println("Cambios confirmados");
             } else {
                 transaction.rollback();
-                System.out.println("✗ Cambios cancelados");
+                System.out.println("Cambios cancelados");
             }
             
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            System.err.println("✗ Error al modificar: " + e.getMessage());
+            System.err.println("Error al modificar: " + e.getMessage());
         }
     }
     
@@ -158,12 +158,12 @@ public class FacturaDAO {
             
             Factura factura = session.get(Factura.class, id);
             if (factura == null) {
-                System.err.println("✗ No existe una factura con ID " + id);
+                System.err.println("No existe una factura con ID " + id);
                 return;
             }
             
             if (!factura.getPedidos().isEmpty()) {
-                System.err.println("✗ No se puede eliminar: la factura tiene pedidos asociados");
+                System.err.println("No se puede eliminar: la factura tiene pedidos asociados");
                 return;
             }
             
@@ -174,15 +174,15 @@ public class FacturaDAO {
             if (confirmar.equalsIgnoreCase("S")) {
                 session.delete(factura);
                 transaction.commit();
-                System.out.println("✓ Factura eliminada correctamente");
+                System.out.println("Factura eliminada correctamente");
             } else {
                 transaction.rollback();
-                System.out.println("✗ Eliminación cancelada");
+                System.out.println("Eliminación cancelada");
             }
             
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            System.err.println("✗ Error al eliminar: " + e.getMessage());
+            System.err.println("Error al eliminar: " + e.getMessage());
         }
     }
 }

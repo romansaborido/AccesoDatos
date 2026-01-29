@@ -19,10 +19,10 @@ public class ProductoDAO {
             transaction = session.beginTransaction();
             session.save(producto);
             transaction.commit();
-            System.out.println("✓ Producto insertado correctamente con ID: " + producto.getIdProducto());
+            System.out.println("Producto insertado correctamente con ID: " + producto.getIdProducto());
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            System.err.println("✗ Error al insertar producto: " + e.getMessage());
+            System.err.println("Error al insertar producto: " + e.getMessage());
         }
     }
     
@@ -39,7 +39,7 @@ public class ProductoDAO {
             insertar(producto);
             
         } catch (Exception e) {
-            System.err.println("✗ Error en los datos introducidos");
+            System.err.println("Error en los datos introducidos");
         }
     }
     
@@ -48,7 +48,7 @@ public class ProductoDAO {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
             return session.createQuery("FROM Producto", Producto.class).list();
         } catch (Exception e) {
-            System.err.println("✗ Error al listar productos: " + e.getMessage());
+            System.err.println("Error al listar productos: " + e.getMessage());
             return null;
         }
     }
@@ -58,7 +58,7 @@ public class ProductoDAO {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
             return session.get(Producto.class, id);
         } catch (Exception e) {
-            System.err.println("✗ Error al buscar producto: " + e.getMessage());
+            System.err.println("Error al buscar producto: " + e.getMessage());
             return null;
         }
     }
@@ -70,7 +70,7 @@ public class ProductoDAO {
             query.setParameter("denom", "%" + denominacion + "%");
             return query.list();
         } catch (Exception e) {
-            System.err.println("✗ Error al buscar: " + e.getMessage());
+            System.err.println("Error al buscar: " + e.getMessage());
             return null;
         }
     }
@@ -83,7 +83,7 @@ public class ProductoDAO {
             query.setParameter("precio", precio);
             return query.list();
         } catch (Exception e) {
-            System.err.println("✗ Error al buscar: " + e.getMessage());
+            System.err.println("Error al buscar: " + e.getMessage());
             return null;
         }
     }
@@ -97,7 +97,7 @@ public class ProductoDAO {
             
             Producto producto = session.get(Producto.class, id);
             if (producto == null) {
-                System.err.println("✗ No existe un producto con ID " + id);
+                System.err.println("No existe un producto con ID " + id);
                 return;
             }
             
@@ -119,15 +119,15 @@ public class ProductoDAO {
             
             if (confirmar.equalsIgnoreCase("S")) {
                 transaction.commit();
-                System.out.println("✓ Cambios confirmados");
+                System.out.println("Cambios confirmados");
             } else {
                 transaction.rollback();
-                System.out.println("✗ Cambios cancelados");
+                System.out.println("Cambios cancelados");
             }
             
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            System.err.println("✗ Error al modificar: " + e.getMessage());
+            System.err.println("Error al modificar: " + e.getMessage());
         }
     }
     
@@ -140,12 +140,12 @@ public class ProductoDAO {
             
             Producto producto = session.get(Producto.class, id);
             if (producto == null) {
-                System.err.println("✗ No existe un producto con ID " + id);
+                System.err.println("No existe un producto con ID " + id);
                 return;
             }
             
             if (!producto.getPedidos().isEmpty()) {
-                System.err.println("✗ No se puede eliminar: el producto tiene pedidos asociados");
+                System.err.println("No se puede eliminar: el producto tiene pedidos asociados");
                 return;
             }
             
@@ -156,15 +156,15 @@ public class ProductoDAO {
             if (confirmar.equalsIgnoreCase("S")) {
                 session.delete(producto);
                 transaction.commit();
-                System.out.println("✓ Producto eliminado correctamente");
+                System.out.println("Producto eliminado correctamente");
             } else {
                 transaction.rollback();
-                System.out.println("✗ Eliminación cancelada");
+                System.out.println("Eliminación cancelada");
             }
             
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            System.err.println("✗ Error al eliminar: " + e.getMessage());
+            System.err.println("Error al eliminar: " + e.getMessage());
         }
     }
 }

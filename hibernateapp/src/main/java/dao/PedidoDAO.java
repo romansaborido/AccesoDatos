@@ -20,10 +20,10 @@ public class PedidoDAO {
             transaction = session.beginTransaction();
             session.save(pedido);
             transaction.commit();
-            System.out.println("✓ Pedido insertado correctamente con ID: " + pedido.getIdPedido());
+            System.out.println("Pedido insertado correctamente con ID: " + pedido.getIdPedido());
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            System.err.println("✗ Error al insertar pedido: " + e.getMessage());
+            System.err.println("Error al insertar pedido: " + e.getMessage());
         }
     }
     
@@ -36,7 +36,7 @@ public class PedidoDAO {
             List<Factura> facturas = session.createQuery("FROM Factura", Factura.class).list();
             
             if (facturas.isEmpty()) {
-                System.err.println("✗ No hay facturas disponibles. Debe crear facturas primero.");
+                System.err.println("No hay facturas disponibles. Debe crear facturas primero.");
                 return;
             }
             
@@ -50,7 +50,7 @@ public class PedidoDAO {
             
             Factura factura = session.get(Factura.class, idFactura);
             if (factura == null) {
-                System.err.println("✗ No existe una factura con ID " + idFactura);
+                System.err.println("No existe una factura con ID " + idFactura);
                 return;
             }
             
@@ -58,7 +58,7 @@ public class PedidoDAO {
             List<Producto> productos = session.createQuery("FROM Producto", Producto.class).list();
             
             if (productos.isEmpty()) {
-                System.err.println("✗ No hay productos disponibles. Debe crear productos primero.");
+                System.err.println("No hay productos disponibles. Debe crear productos primero.");
                 return;
             }
             
@@ -72,7 +72,7 @@ public class PedidoDAO {
             
             Producto producto = session.get(Producto.class, idProducto);
             if (producto == null) {
-                System.err.println("✗ No existe un producto con ID " + idProducto);
+                System.err.println("No existe un producto con ID " + idProducto);
                 return;
             }
             
@@ -84,11 +84,11 @@ public class PedidoDAO {
             session.save(pedido);
             transaction.commit();
             
-            System.out.println("✓ Pedido insertado correctamente con ID: " + pedido.getIdPedido());
+            System.out.println("Pedido insertado correctamente con ID: " + pedido.getIdPedido());
             
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            System.err.println("✗ Error al insertar pedido: " + e.getMessage());
+            System.err.println("Error al insertar pedido: " + e.getMessage());
         }
     }
     
@@ -97,7 +97,7 @@ public class PedidoDAO {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
             return session.createQuery("FROM Pedido", Pedido.class).list();
         } catch (Exception e) {
-            System.err.println("✗ Error al listar pedidos: " + e.getMessage());
+            System.err.println("Error al listar pedidos: " + e.getMessage());
             return null;
         }
     }
@@ -107,7 +107,7 @@ public class PedidoDAO {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
             return session.get(Pedido.class, id);
         } catch (Exception e) {
-            System.err.println("✗ Error al buscar pedido: " + e.getMessage());
+            System.err.println("Error al buscar pedido: " + e.getMessage());
             return null;
         }
     }
@@ -121,7 +121,7 @@ public class PedidoDAO {
             
             Pedido pedido = session.get(Pedido.class, id);
             if (pedido == null) {
-                System.err.println("✗ No existe un pedido con ID " + id);
+                System.err.println("No existe un pedido con ID " + id);
                 return;
             }
             
@@ -138,15 +138,15 @@ public class PedidoDAO {
             
             if (confirmar.equalsIgnoreCase("S")) {
                 transaction.commit();
-                System.out.println("✓ Cambios confirmados");
+                System.out.println("Cambios confirmados");
             } else {
                 transaction.rollback();
-                System.out.println("✗ Cambios cancelados");
+                System.out.println("Cambios cancelados");
             }
             
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            System.err.println("✗ Error al modificar: " + e.getMessage());
+            System.err.println("Error al modificar: " + e.getMessage());
         }
     }
     

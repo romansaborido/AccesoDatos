@@ -23,7 +23,7 @@ public class App {
         // Cerrar recursos
         HibernateUtils.shutdown();
         scanner.close();
-        System.out.println("\n✓ Sistema cerrado correctamente. ¡Hasta pronto!");
+        System.out.println("\n Sistema cerrado correctamente.");
     }
     
     // MENU PRINCIPAL
@@ -61,11 +61,11 @@ public class App {
                         salir = true;
                         break;
                     default:
-                        System.out.println("✗ Opción no válida. Intente de nuevo.");
+                        System.out.println("Opción no válida. Intente de nuevo.");
                         break;
                 }
             } catch (Exception e) {
-                System.out.println("✗ Error: Entrada no válida. Intente de nuevo.");
+                System.out.println("Error: Entrada no válida. Intente de nuevo.");
                 scanner.nextLine(); // Limpiar buffer
             }
         } while (!salir);
@@ -113,7 +113,7 @@ public class App {
                         if (mesa != null) {
                             System.out.println("Mesa encontrada: " + mesa);
                         } else {
-                            System.out.println("✗ No se encontró la mesa con ID " + idBuscar);
+                            System.out.println("No se encontró la mesa con ID " + idBuscar);
                         }
                         break;
                     case 4:
@@ -157,11 +157,11 @@ public class App {
                         volver = true;
                         break;
                     default:
-                        System.out.println("✗ Opción no válida. Intente de nuevo.");
+                        System.out.println("Opción no válida. Intente de nuevo.");
                         break;
                 }
             } catch (Exception e) {
-                System.out.println("✗ Error: Entrada no válida. Intente de nuevo.");
+                System.out.println("Error: Entrada no válida. Intente de nuevo.");
                 scanner.nextLine();
             }
         } while (!volver);
@@ -210,7 +210,7 @@ public class App {
                             System.out.println("Factura encontrada: " + factura);
                             System.out.println("Mesa asociada: " + factura.getMesa());
                         } else {
-                            System.out.println("✗ No se encontró la factura con ID " + idBuscar);
+                            System.out.println("No se encontró la factura con ID " + idBuscar);
                         }
                         break;
                     case 4:
@@ -240,11 +240,11 @@ public class App {
                         volver = true;
                         break;
                     default:
-                        System.out.println("✗ Opción no válida. Intente de nuevo.");
+                        System.out.println("Opción no válida. Intente de nuevo.");
                         break;
                 }
             } catch (Exception e) {
-                System.out.println("✗ Error: Entrada no válida. Intente de nuevo.");
+                System.out.println("Error: Entrada no válida. Intente de nuevo.");
                 scanner.nextLine();
             }
         } while (!volver);
@@ -295,7 +295,7 @@ public class App {
                             System.out.println("Factura: " + pedido.getFactura());
                             System.out.println("Producto: " + pedido.getProducto());
                         } else {
-                            System.out.println("✗ No se encontró el pedido con ID " + idBuscar);
+                            System.out.println("No se encontró el pedido con ID " + idBuscar);
                         }
                         break;
                     case 4:
@@ -314,11 +314,11 @@ public class App {
                         volver = true;
                         break;
                     default:
-                        System.out.println("✗ Opción no válida. Intente de nuevo.");
+                        System.out.println("Opción no válida. Intente de nuevo.");
                         break;
                 }
             } catch (Exception e) {
-                System.out.println("✗ Error: Entrada no válida. Intente de nuevo.");
+                System.out.println("Error: Entrada no válida. Intente de nuevo.");
                 scanner.nextLine();
             }
         } while (!volver);
@@ -365,7 +365,7 @@ public class App {
                         if (producto != null) {
                             System.out.println("Producto encontrado: " + producto);
                         } else {
-                            System.out.println("✗ No se encontró el producto con ID " + idBuscar);
+                            System.out.println("No se encontró el producto con ID " + idBuscar);
                         }
                         break;
                     case 4:
@@ -409,11 +409,11 @@ public class App {
                         volver = true;
                         break;
                     default:
-                        System.out.println("✗ Opción no válida. Intente de nuevo.");
+                        System.out.println("Opción no válida. Intente de nuevo.");
                         break;
                 }
             } catch (Exception e) {
-                System.out.println("✗ Error: Entrada no válida. Intente de nuevo.");
+                System.out.println("Error: Entrada no válida. Intente de nuevo.");
                 scanner.nextLine();
             }
         } while (!volver);

@@ -19,10 +19,10 @@ public class MesaDAO {
             transaction = session.beginTransaction();
             session.save(mesa);
             transaction.commit();
-            System.out.println("✓ Mesa insertada correctamente con ID: " + mesa.getIdMesa());
+            System.out.println("Mesa insertada correctamente con ID: " + mesa.getIdMesa());
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            System.err.println("✗ Error al insertar mesa: " + e.getMessage());
+            System.err.println("Error al insertar mesa: " + e.getMessage());
         }
     }
     
@@ -39,7 +39,7 @@ public class MesaDAO {
             insertar(mesa);
             
         } catch (Exception e) {
-            System.err.println("✗ Error en los datos introducidos");
+            System.err.println("Error en los datos introducidos");
         }
     }
     
@@ -48,7 +48,7 @@ public class MesaDAO {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
             return session.createQuery("FROM Mesa", Mesa.class).list();
         } catch (Exception e) {
-            System.err.println("✗ Error al listar mesas: " + e.getMessage());
+            System.err.println("Error al listar mesas: " + e.getMessage());
             return null;
         }
     }
@@ -58,7 +58,7 @@ public class MesaDAO {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
             return session.get(Mesa.class, id);
         } catch (Exception e) {
-            System.err.println("✗ Error al buscar mesa: " + e.getMessage());
+            System.err.println("Error al buscar mesa: " + e.getMessage());
             return null;
         }
     }
@@ -70,7 +70,7 @@ public class MesaDAO {
             query.setParameter("num", numComensales);
             return query.list();
         } catch (Exception e) {
-            System.err.println("✗ Error al buscar: " + e.getMessage());
+            System.err.println("Error al buscar: " + e.getMessage());
             return null;
         }
     }
@@ -82,7 +82,7 @@ public class MesaDAO {
             query.setParameter("res", reserva);
             return query.list();
         } catch (Exception e) {
-            System.err.println("✗ Error al buscar: " + e.getMessage());
+            System.err.println("Error al buscar: " + e.getMessage());
             return null;
         }
     }
@@ -96,7 +96,7 @@ public class MesaDAO {
             
             Mesa mesa = session.get(Mesa.class, id);
             if (mesa == null) {
-                System.err.println("✗ No existe una mesa con ID " + id);
+                System.err.println("No existe una mesa con ID " + id);
                 return;
             }
             
@@ -118,15 +118,15 @@ public class MesaDAO {
             
             if (confirmar.equalsIgnoreCase("S")) {
                 transaction.commit();
-                System.out.println("✓ Cambios confirmados");
+                System.out.println("Cambios confirmados");
             } else {
                 transaction.rollback();
-                System.out.println("✗ Cambios cancelados");
+                System.out.println("Cambios cancelados");
             }
             
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            System.err.println("✗ Error al modificar: " + e.getMessage());
+            System.err.println("Error al modificar: " + e.getMessage());
         }
     }
     
@@ -139,13 +139,13 @@ public class MesaDAO {
             
             Mesa mesa = session.get(Mesa.class, id);
             if (mesa == null) {
-                System.err.println("✗ No existe una mesa con ID " + id);
+                System.err.println("No existe una mesa con ID " + id);
                 return;
             }
             
             // Verificar si tiene facturas asociadas
             if (!mesa.getFacturas().isEmpty()) {
-                System.err.println("✗ No se puede eliminar: la mesa tiene facturas asociadas");
+                System.err.println("No se puede eliminar: la mesa tiene facturas asociadas");
                 System.out.println("Debe eliminar primero las facturas relacionadas");
                 return;
             }
@@ -157,15 +157,15 @@ public class MesaDAO {
             if (confirmar.equalsIgnoreCase("S")) {
                 session.delete(mesa);
                 transaction.commit();
-                System.out.println("✓ Mesa eliminada correctamente");
+                System.out.println("Mesa eliminada correctamente");
             } else {
                 transaction.rollback();
-                System.out.println("✗ Eliminación cancelada");
+                System.out.println("Eliminación cancelada");
             }
             
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            System.err.println("✗ Error al eliminar: " + e.getMessage());
+            System.err.println("Error al eliminar: " + e.getMessage());
         }
     }
     
@@ -192,15 +192,15 @@ public class MesaDAO {
             if (confirmar.equalsIgnoreCase("S")) {
                 session.createQuery("DELETE FROM Mesa").executeUpdate();
                 transaction.commit();
-                System.out.println("✓ Todas las mesas eliminadas");
+                System.out.println("Todas las mesas eliminadas");
             } else {
                 transaction.rollback();
-                System.out.println("✗ Eliminación cancelada");
+                System.out.println("Eliminación cancelada");
             }
             
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            System.err.println("✗ Error al eliminar: " + e.getMessage());
+            System.err.println("Error al eliminar: " + e.getMessage());
         }
     }
 }
